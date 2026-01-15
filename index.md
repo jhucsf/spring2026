@@ -1,10 +1,10 @@
 ---
 layout: default
-title: "Computer Systems Fundamentals, Fall 2025"
+title: "Computer Systems Fundamentals, Spring 2026"
 category: "home"
 ---
 
-Welcome to the website for Computer Systems Fundamentals (Fall 2025)
+Welcome to the website for Computer Systems Fundamentals (Spring 2026)
 at <a href="https://www.jhu.edu/">Johns Hopkins University</a>!
 
 The course is about *computer systems* from the *programmer's

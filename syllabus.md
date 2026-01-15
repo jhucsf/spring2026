@@ -25,23 +25,19 @@ Office hours: Tuesday 12–2 pm, Thursday 1–3 pm, via Zoom (see Courselore for
 
 Head CAs:
 
-<!--
 * Gavi Kigner, <gkigner1@jh.edu>
 * Sofia Floody, <sfloody1@jhu.edu>
--->
-*Coming soon!*
 
 CAs:
 
-<!--
 * Elena Vodychko, <evodych1@jh.edu>
+* Matthew Schricker, <mschric1@jh.edu>
+* Miseo Choi, <mchoi46@jhu.edu>
+* Jason Lafita, <jlafita1@jh.edu>
 * Matthew Song, <msong29@jh.edu>
 * Lawrence Cai, <lcai18@jhu.edu>
 * Brady Bock, <bbock4@jh.edu>
-* Trevor Black, <tblack20@jhu.edu>
-* Akshaya Ajith, <aajith1@jh.edu>
--->
-*Coming soon!*
+* Yash Permalla, <ypermal1@jhu.edu>
 
 ## Meeting
 
@@ -65,7 +61,7 @@ Gradescope (assignment/exam submission and grading): <https://www.gradescope.com
 (note that you will access Gradescope using Canvas)
 
 Videos will be posted on Canvas: go to <http://my.jhu.edu>, log in,
-choose <b>Education</b> → <b>Canvas</b>, choose EN.601.229.01.FA25 from
+choose <b>Education</b> → <b>Canvas</b>, choose EN.601.229.01.SP26 from
 courses, then choose <b>Panopto Video</b>
 
 ## Course Information
@@ -124,8 +120,8 @@ in-class activities.
 
 Your course grade will be determined as follows:
 
-* Programming assignments: 40%
-* Exams: 55% (3 exams, each worth 18.<span style="text-decoration: overline;">3</span>%)
+* Programming assignments: 30%
+* Exams: 65% (3 exams, each worth 21.<span style="text-decoration: overline;">6</span>%)
 * Participation: 5%
 
 You have a total of 120 late hours to use as needed for homework
