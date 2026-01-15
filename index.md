@@ -31,4 +31,5 @@ Please email <daveho@cs.jhu.edu> if you need to get access to Courselore.
 
 ## News
 
-* **Jan 20** — Welcome!
+* **Jan 20** — Welcome! [Assignment 1](assign/assign01.html) has two milestones, due
+  (respectively) Wednesday, January 28th and Wednesday, February 4th.

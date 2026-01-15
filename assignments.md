@@ -42,8 +42,4 @@ up an x86-64 Linux development environment. (There are a number of good options.
 
 Assignment | Type | Due
 ---------- | :--: | ---
-[Assignment 1: Fixed-Point Arithmetic](assign/assign01.html) | Pair | MS1 due Wednesday, Sep 3<br>MS2 due Wednesday, Sep 10
-[Assignment 2: Image Processing](assign/assign02.html) | Pair | MS1 due Friday, Sep 19<br>MS2 due Friday, Sep 26<br>MS3 due Friday, Oct 3
-[Assignment 3: Cache Simulator](assign/assign03.html) | Pair | MS1 due Friday, Oct 10th (no late hours)<br>MS2 due Friday, Oct 24th<br>MS3 due Friday, Oct 31st
-[Assignment 4: Parallel Quicksort](assign/assign04.html) | Pair | Monday, Nov 10th
-[Assignment 5: Chat Server](assign/assign05.html) | Pair | MS1 due Monday, Nov 17th<br>MS2 due Friday, Dec 5th (no late hours)
+[Assignment 1: Big Integers](assign/assign01.html) | Pair | MS1 due Wednesday, Jan 28<br>MS2 due Wednesday, Feb 4
