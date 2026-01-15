@@ -35,7 +35,6 @@ CAs:
 * Miseo Choi, <mchoi46@jhu.edu>
 * Jason Lafita, <jlafita1@jh.edu>
 * Matthew Song, <msong29@jh.edu>
-* Lawrence Cai, <lcai18@jhu.edu>
 * Brady Bock, <bbock4@jh.edu>
 * Yash Permalla, <ypermal1@jhu.edu>
 
