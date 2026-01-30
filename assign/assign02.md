@@ -49,7 +49,7 @@ grade the quality and comprehensiveness of your unit tests until Milestone 3.
 
 In Milestone 3, you will implement the
 [`blur`](#the-blur-transformation) blur transformation and
-*TODO harder transformations for Spring 2026*
+[`expand`](#the-expand-transformation)
 <!--
 [`ellipse`](#the-ellipse-transformation) and
 [`emboss`](#the-emboss-transformation)
@@ -331,9 +331,56 @@ corresponding input pixel.
 Averages should be computed using purely integer arithmetic with
 no rounding.
 
+Example:
+
 Original image | Transformed image<br>(blur distance 5)
 :------------: | :---------------:
-<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_transpose.png"><img style="width: 20em;" alt="blurred cat image " src="img/ingo_blur_5.png"></a>
+<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_blur_5.png"><img style="width: 20em;" alt="blurred cat image " src="img/ingo_blur_5.png"></a>
+
+### The `expand` transformation
+
+The `expand` transformation doubles the width and height of the image.
+
+Let's say that there are $$n$$ rows and $$m$$ columns of pixels in the
+input image, so there are $$2n$$ rows and $$2m$$ columns in the output
+image.  The pixel color and alpha value of the output pixel at row $$i$$ and column
+$$j$$ should be computed as follows.
+
+If both $$i$$ and $$j$$ are even, then the color and alpha value of the output
+pixel are exactly the same as the input pixel at row $$i/2$$ and column $$j/2$$.
+
+If $$i$$ is even but $$j$$ is odd, then the color components and alpha value
+of the output pixel are computed as the average of those in the input pixels
+in row $$i/2$$ at columns $$\lfloor j/2 \rfloor$$ and $$\lfloor j/2 \rfloor + 1$$.
+
+If $$i$$ is odd and $$j$$ is even, then the color components and alpha value
+of the output pixel are computed as the average of those in the input pixels
+in column $$j/2$$ at rows $$\lfloor i/2 \rfloor$$ and  $$\lfloor i/2 \rfloor + 1$$.
+
+If both $$i$$ and $$j$$ are odd then the color components and alpha value
+of the output pixel are computed as the average of the input pixels
+
+1. At row $$\lfloor i/2 \rfloor$$ and column $$\lfloor j/2 \rfloor$$
+2. At row $$\lfloor i/2 \rfloor$$ and column $$\lfloor j/2 \rfloor + 1$$
+3. At row $$\lfloor i/2 \rfloor + 1$$ and column $$\lfloor j/2 \rfloor$$
+4. At row $$\lfloor i/2 \rfloor + 1$$ and column $$\lfloor j/2 \rfloor + 1$$
+
+Note that in the cases where either $$i$$ or $$j$$ is odd, it is not
+necessarily the case that either row $$\lfloor i/2 \rfloor + 1$$ or
+column $$\lfloor j/2 \rfloor + 1$$ are in bounds in the input image.
+Only input pixels that are properly in bounds should be incorporated into
+the averages used to determine the color components and alpha value
+of the output pixel.
+
+Averages should be computed using purely integer arithmetic with
+no rounding.
+
+Example (note that the transformed image is twice the size of the
+original, click to see it full size):
+
+Original image | Transformed image
+:------------: | :---------------:
+<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_expand.png"><img style="width: 20em;" alt="expanded cat image " src="img/ingo_expand.png"></a>
 
 ## `c_imgproc` and `asm_imgproc` programs
 
