@@ -310,6 +310,34 @@ Original image | Transformed image
 <a href="img/dice.png"><img style="width: 20em;" alt="original dice image" src="img/dice.png"></a > | <a href="img/dice_emboss.png"><img style="width: 20em;" alt="embossed dice image " src="img/dice_emboss.png"></a>
 -->
 
+
+### The `squash` transformation
+TO BE FILLED IN
+
+
+### The `color rotate` transformation
+
+The `color rotate` transformation transforms the input image by shifting around the color components' values in each pixel.
+
+Each pixel of the output image should have its color components determined by 
+taking the previous color component's value and applying it to that pixel. The 
+old pixel's red component value will be used for the new pixel's green component 
+value, the old pixel's green component value will be used new pixel's blue 
+component value and the old pixel's blue component value will be used new 
+pixel's red component value. The alpha value each output pixel should be 
+identical to the corresponding input pixel.
+
+For example, if a pixel had the hex value 0xAABBCCDD, the transformed pixel 
+would become 0xCCAABBDD in the same location.
+
+Example:
+Original image | Transformed image<br>
+:------------: | :---------------:
+<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_color_rotated.png"><img style="width: 20em;" alt="color rotated cat image " src="img/ingo_color_rotated.png"></a>
+
+
+
+
 ### The `blur` transformation
 
 The `blur` transformation transforms the input image using a blur effect.
