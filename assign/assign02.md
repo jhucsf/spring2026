@@ -312,8 +312,28 @@ Original image | Transformed image
 
 
 ### The `squash` transformation
-TO BE FILLED IN
+The `squash` transformation transforms the input image by shrinking it both horazontally and vertically potentially by different amounts.
 
+Each pixel of the output image is determined by sampling a pixel from the input image. Specifically, the output pixel at row i and column j copies the input pixel at row (i × yfac) and column (j × xfac). This is equivalent to keeping only the pixels whose row index is divisible by yfac and whose column index is divisible by xfac.
+For example, consider the image below where each letter corresponds to a pixel:
+```
+XAAAYBBB
+AAAABBBB
+ZCCCWDDD
+CCCCDDDD
+```
+
+If the user specifies xfac = 4 and yfac = 2, only pixels in rows 0 and 2 with columns 0 and 4 are sampled. The resultant image is:
+```
+XY
+ZW
+```
+The output image will have width equal to (input width / xfac) and height equal to (input height / yfac).
+
+Example (note that the transformed image has been enlarged, click to see it full size):
+Original image | Transformed image<br> (xfac 8, yfac 4)
+:------------: | :---------------:
+<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a> | <a href="img/ingo_squash_8_4.png"><img style="width: 10em;" alt="squashed cat image" src="img/ingo_squash_8_4.png"></a>
 
 ### The `color rotate` transformation
 
