@@ -37,11 +37,8 @@ helper functions, and your unit tests will help you gain confidence in their
 correctness.
 
 In Milestone 2, you are required to implement the
-*TODO easy transforms for Spring 2026*
-<!--
-[`complement`](#the-complement-transformation) and
-[`transpose`](#the-transpose-transformation)
--->
+[`squash`](#the-squash-transformation) and
+[`color_rot`](#the-color_rot-transformation)
 transformations in assembly language. We expect you to have comprehensive unit tests
 for the assembly language implementations of your helper functions. (In theory you can
 just use the ones you implemented in Milestone 1.) Note that we will not officially
@@ -140,13 +137,13 @@ Milestone 1: 30%
 
 Milestone 2: 35%
 
-* Functional correctness of `imgproc_complement` and `imgproc_transpose`: 30%
+* Functional correctness of `imgproc_squash` and `imgproc_color_rot`: 30%
 * Design/coding style of assembly functions: 5%
 
 Milestone 3: 35%
 
-* Functional correctness of `imgproc_ellipse`: 10%
-* Functional correctness of `imgproc_emboss`: 10%
+* Functional correctness of `imgproc_blur`: 10%
+* Functional correctness of `imgproc_expand`: 10%
 * Unit testing of helper functions: 10%
 * Design/coding style of assembly functions: 5%
 
@@ -204,118 +201,38 @@ You will implement the following image transformation functions in both
 C and assembly language:
 
 ```c
-// TODO: easy transformation functions
-// TODO: harder transformation functions
-void imgproc_blur( struct Image *input_img, struct Image *output_img, int32_t blur_dist );
+void imgproc_squash( struct Image *input_img,
+                     struct Image *output_img,
+                     int32_t xfac, int32_t yfac );
+void imgproc_color_rot( struct Image *input_img,
+                        struct Image *output_img );
+void imgproc_blur( struct Image *input_img,
+                   struct Image *output_img,
+                   int32_t blur_dist );
+void imgproc_expand( struct Image *input_img,
+                     struct Image *output_img );
 ```
 
 These functions are declared in `imgproc.h`, and each one has a detailed API
 comment describing its function, the meaning of the parameters, and the
 meaning of the return value (for the non-`void` functions.)
 
-<!--
-### The `complement` transformation
-
-In the `complement` transformation, the bits in each pixel value representing
-the red, green, and blue color component values should be replaced by their
-bitwise complements. In other words, for just the color component bits,
-each 1 bit should be replaced by 0, and each 0 bit should be replaced by 1.
-The C `~` operator and the x86-64 `not` instruction can implement this
-transformation. All alpha values should remain unmodified.
-
-Visually, this transformation has the effect of making intense color
-component values dim and dim color component value intense,
-much like a photographic negative.  (Think about why this happens!)
-
-Original image | Transformed image
-:------------: | :---------------:
-<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_complement.png"><img style="width: 20em;" alt="bitwise complement cat image " src="img/ingo_complement.png"></a>
-
-### The `transpose` transformation
-
-In the `transpose` transformation, which can only be applied to square images
-(where the image width and height are the same), the row and column of each
-source pixel are swapped to yield the row and column of the destination
-pixel. I.e., a pixel at row $$i$$ and column $$j$$ in the input image should
-be placed at row $$j$$ and column $$i$$ in the output image.
-
-Original image | Transformed image
-:------------: | :---------------:
-<a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_transpose.png"><img style="width: 20em;" alt="transposed cat image " src="img/ingo_transpose.png"></a>
-
-### The `ellipse` transformation
-
-In the `ellipse` transformation, pixels within an centered ellipse
-are retained with their original color component and alpha values,
-while pixels outside of the ellipse are set to fully-opaque black.
-
-Determining which pixels are in the ellipse should be done as follows.
-
-Compute values $$a = \lfloor w/2 \rfloor$$ and $$b = \lfloor h/2 \rfloor$$,
-where $$w$$ is the image width and $$h$$ is the image height.
-
-Consider the pixel at row $$b$$ and column $$a$$ as being the center
-pixel of the image.
-
-For each pixel in the image, compute $$x$$ as the horizontal distance
-from the center pixel, and $$y$$ as the vertical distance from the
-center pixel.
-
-A pixel is in the ellipse, and should be copied to the output image,
-if it satisfies the inequality
-
-$$\lfloor (10,000 \times x^{2})/a^{2} \rfloor + \lfloor (10,000 \times y^{2})/b^{2} \rfloor \le 10,000$$
-
-Note that in these computations, the floor operations indicate that
-integer division is used. You will not need to use floating-point
-operations.
-
-It should be sufficient to use 32-bit integers for these computations.
-
-Original image | Transformed image
-:------------: | :---------------:
-<a href="img/dice.png"><img style="width: 20em;" alt="original dice image" src="img/dice.png"></a > | <a href="img/dice_ellipse.png"><img style="width: 20em;" alt="ellipse cropped dice image " src="img/dice_ellipse.png"></a>
-
-### The `emboss` transformation
-
-The `emboss` transformation generates an "emboss" effect. The pixels
-of the source image are transformed as follows.
-
-The top row and left column of pixels are transformed so that their
-red, green, and blue color component values are all set to 128,
-and their alpha values are not modified.
-
-For all other pixels, we consider the pixel's color component
-values $$r$$, $$g$$, and $$b$$, and also the pixel's upper-left neighbor's
-color component values $$nr$$, $$ng$$, and $$nb$$. In comparing the color
-component values of the pixel and its upper-left neighbor,
-we consider the differences $$(nr-r)$$, $$(ng-g)$$, and $$(nb-b)$$.
-Whichever of these differences has the largest absolute value
-we refer to as `diff`. (Note that in the case that more than one
-difference has the same absolute value, the red difference has
-priority over green and blue, and the green difference has priority
-over blue.)
-
-From the value `diff`, compute the value `gray` as `128 + diff`.
-However, `gray` should be clamped so that it is in the range
-0–255. I.e., if it's negative, it should become 0, and if
-it's greater than 255, it should become 255.
-
-For all pixels not in the top or left row, the pixel's red, green,
-and blue color component values should be set to `gray`, and the
-alpha value should be left unmodified.
-
-Original image | Transformed image
-:------------: | :---------------:
-<a href="img/dice.png"><img style="width: 20em;" alt="original dice image" src="img/dice.png"></a > | <a href="img/dice_emboss.png"><img style="width: 20em;" alt="embossed dice image " src="img/dice_emboss.png"></a>
--->
-
-
 ### The `squash` transformation
-The `squash` transformation transforms the input image by shrinking it both horazontally and vertically potentially by different amounts.
 
-Each pixel of the output image is determined by sampling a pixel from the input image. Specifically, the output pixel at row i and column j copies the input pixel at row (i × yfac) and column (j × xfac). This is equivalent to keeping only the pixels whose row index is divisible by yfac and whose column index is divisible by xfac.
+The `squash` transformation transforms the input image by shrinking it
+both horizontally and vertically by (potentially different) integer factors.
+
+In the following explanation, we'll refer to the horizontal factor as
+$$a$$ and the vertical factor as $$b$$. (In the code, they are referred to
+by the names `xfac` and `yfac`.)
+
+Each pixel of the output image is determined by sampling a pixel from
+the input image. Specifically, the output pixel at row $$i$$ and column $$j$$
+copies the input pixel at row $$bi$$ and column $$aj$$. This
+is equivalent to keeping only the pixels whose row index is divisible
+by $$b$$ and whose column index is divisible by $$a$$.
 For example, consider the image below where each letter corresponds to a pixel:
+
 ```
 XAAAYBBB
 AAAABBBB
@@ -323,21 +240,29 @@ ZCCCWDDD
 CCCCDDDD
 ```
 
-If the user specifies xfac = 4 and yfac = 2, only pixels in rows 0 and 2 with columns 0 and 4 are sampled. The resultant image is:
+If the user specifies $$a = 4$$ and $$b = 2$$, only pixels in rows 0 and
+2 with columns 0 and 4 are sampled. The resultant image is:
+
 ```
 XY
 ZW
 ```
-The output image will have width equal to (input width / xfac) and height equal to (input height / yfac).
 
-Example (note that the transformed image has been enlarged, click to see it full size):
+If the width and height of the original image are $$w$$ and $$h$$,
+respectively, the output image will have width equal to $$\lfloor w / a \rfloor$$
+and height equal to $$\lfloor h / b \rfloor$$.
+
+Example (note that the transformed image has been enlarged, click to see it 
+at its correct size):
+
 Original image | Transformed image<br> (xfac 8, yfac 4)
 :------------: | :---------------:
 <a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a> | <a href="img/ingo_squash_8_4.png"><img style="width: 10em;" alt="squashed cat image" src="img/ingo_squash_8_4.png"></a>
 
-### The `color rotate` transformation
+### The `color_rot` transformation
 
-The `color rotate` transformation transforms the input image by shifting around the color components' values in each pixel.
+The `color_rot` transformation transforms the input image by shifting
+around the color components' values in each pixel.
 
 Each pixel of the output image should have its color components determined by 
 taking the previous color component's value and applying it to that pixel. The 
@@ -347,10 +272,13 @@ component value and the old pixel's blue component value will be used new
 pixel's red component value. The alpha value each output pixel should be 
 identical to the corresponding input pixel.
 
-For example, if a pixel had the hex value 0xAABBCCDD, the transformed pixel 
-would become 0xCCAABBDD in the same location.
+For example, if a pixel had the hex value `0xAABBCCDD`, the transformed pixel 
+would become `0xCCAABBDD` in the same location. (Recall that the red color channel
+occupies the most-significant 8 bits of a pixel, and the alpha channel
+occupies the least-significant 8 bits of a pixel.)
 
 Example:
+
 Original image | Transformed image<br>
 :------------: | :---------------:
 <a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_color_rotated.png"><img style="width: 20em;" alt="color rotated cat image " src="img/ingo_color_rotated.png"></a>
