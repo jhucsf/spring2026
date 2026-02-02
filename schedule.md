@@ -37,13 +37,13 @@ Feb 4 | [ALU operations, arithmetic](lectures/lecture07-public.pdf), [alu.zip (e
 Feb 6 | [Control flow](lectures/lecture08-public.pdf), [control.zip (example code)](lectures/control.zip) | *CSAPP* 3.6 | 
 Feb 9 | [Procedures, stacks](lectures/lecture09-public.pdf), [control2.zip (example code)](lectures/control2.zip) | *CSAPP* 3.7 | 
 Feb 11 | [Arrays and structs](lectures/lecture10-public.pdf), [arraystruct.zip (example code)](lectures/arraystruct.zip) | *CSAPP* 3.8–3.9 | 
-Feb 13 | Assembly language in class exercise |  | <span class='tentative'>A2 MS1 due</span>
+Feb 13 | Assembly language in class exercise |  | [A2](assign/assign02.html) MS1 due
 Feb 16 | [Code and data interactions, buffer overflows](lectures/lecture11-public.pdf), [buf.zip (example code)](lectures/buf.zip) | *CSAPP* 3.10 | 
 Feb 18 | Program optimization (basic techniques): see Canvas for slides | *CSAPP* 5.1–5.8 | 
-Feb 20 | [Pipelines](lectures/lecture13-public.pdf) | <i>P&amp;H</i> 4.5–4.7 | <span class='tentative'>A2 MS2 due</span>
+Feb 20 | [Pipelines](lectures/lecture13-public.pdf) | <i>P&amp;H</i> 4.5–4.7 | [A2](assign/assign02.html) MS2 due
 Feb 23 | Program optimization (ILP, memory, profiling): see Canvas for slides | *CSAPP* 5.9–5.14 | 
 Feb 25 | [Memory hierarchy](lectures/lecture15-public.pdf) | *CSAPP* 6.1–6.3 | 
-Feb 27 | Exam 1 review session |  | <span class='tentative'>A2 MS3 due</span>
+Feb 27 | Exam 1 review session |  | [A2](assign/assign02.html) MS3 due
 Mar 2 | **Exam 1** (in class) |  | 
 Mar 4 | [Cache policies](lectures/lecture16-public.pdf) | *CSAPP* 6.4 | 
 Mar 6 | Caches and program execution: see Canvas for slides | *CSAPP* 6.5 | <span class='tentative'>A3 MS1 due</span>
