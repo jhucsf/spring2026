@@ -11,6 +11,9 @@ title: "Assignment 2: Image Processing"
 
 This is a **pair** assignment, so you may work with one partner.
 
+*Update 2/3* — fixed some details so they are relevant to the
+this semester's image transformations
+
 <div class='admonition danger'>
   <div class='title'>Warning!</div>
   <div class='content' markdown='1'>
@@ -47,10 +50,6 @@ grade the quality and comprehensiveness of your unit tests until Milestone 3.
 In Milestone 3, you will implement the
 [`blur`](#the-blur-transformation) blur transformation and
 [`expand`](#the-expand-transformation)
-<!--
-[`ellipse`](#the-ellipse-transformation) and
-[`emboss`](#the-emboss-transformation)
--->
 transformations.
 
 Note that in each milestone, we expect all of the tests executed
@@ -352,7 +351,7 @@ Averages should be computed using purely integer arithmetic with
 no rounding.
 
 Example (note that the transformed image is twice the size of the
-original, click to see it full size):
+original in each dimension, click to see it full size):
 
 Original image | Transformed image
 :------------: | :---------------:
@@ -517,7 +516,7 @@ just to ensure that `%rsp` is aligned correctly.
 We *strongly* recommend that you have a comment in each function explaining
 how it uses callee-saved registers and (if relevant) stack memory, since these are
 the equivalent of local variables in assembly code. For example,
-here is a comment taken from the implementation of the `imgproc_emboss`
+here is a comment taken from the implementation of the `imgproc_squash`
 function in the reference solution:
 
 <a name='register-memory-comment'>
@@ -525,11 +524,15 @@ function in the reference solution:
 ```c
 /*
  * Register use:
- *   %r12 - pointer to input Image
- *   %r13 - pointer to output Image
- *   %r14d - row index
- *   %r15d - column index
- *   %ebx - original/updated pixel value
+ *   %r12 - saved pointer to input Image
+ *   %r13 - saved pointer to output Image
+ *   %r14d - row loop counter (i)
+ *   %r15d - column loop counter (j)
+ *   %ebx - saved pixel value
+ *
+ * Memory use:
+ *   -8(%rbp) - saved xfac
+ *   -4(%rbp) - saved yfac
  */
 ```
 
@@ -584,13 +587,13 @@ If a unit test fails, you should use `gdb` to debug the code to determine
 why it is not working.
 
 Setting a breakpoint on the specific test function that is failing is
-one way to start. For example, if the `test_is_in_ellipse` test function
-is failing, in `gdb` set a breakpoint on that function, then run the
+one way to start. For example, if the `test_get_neighbor` test function
+is failing, in `gdb` set a breakpoint on the `get_neighbor` function, then run the
 program so that it only runs that test function:
 
 ```
-break test_is_in_ellipse
-run test_is_in_ellipse
+break test_get_neighbor
+run test_get_neighbor
 ```
 
 You will gain control of the program at the beginning of the test
@@ -599,11 +602,11 @@ variables, registers, and memory, etc.
 
 Another good option for setting a breakpoint is the `tctest_fail`
 function, because this is the function called when a test assertion
-fails. For example, assuming `test_is_in_ellipse` has an assertion failure:
+fails. For example, assuming `test_get_neighbor` has an assertion failure:
 
 ```
 break tctest_fail
-run test_is_in_ellipse
+run test_get_neighbor
 ```
 
 When the `tctest_fail` breakpoint is reached, use the `up` command (as many
