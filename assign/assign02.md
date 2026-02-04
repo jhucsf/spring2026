@@ -104,7 +104,7 @@ We expect you to follow the [style guidelines](style.html).
 However, the expectations for function length will be relaxed considerably
 for your assembly language code. It is not unusual for an assembly language
 function to have 100 or more lines of code. In the reference solution,
-the longest function was about 115 lines, although there was extensive use of
+the longest function was about 149 lines, although there was extensive use of
 comments and whitespace to improve readability.
 
 Of course, you should strive to make your assembly language functions
