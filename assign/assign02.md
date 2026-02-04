@@ -14,6 +14,11 @@ This is a **pair** assignment, so you may work with one partner.
 *Update 2/3* — fixed some details so they are relevant to the
 this semester's image transformations
 
+*Update 2/4* — added
+[Template assembly language function](#template-assembly-language-function)
+and [Computing average pixel values](#computing-average-pixel-values)
+sections.
+
 <div class='admonition danger'>
   <div class='title'>Warning!</div>
   <div class='content' markdown='1'>
@@ -516,7 +521,7 @@ just to ensure that `%rsp` is aligned correctly.
 We *strongly* recommend that you have a comment in each function explaining
 how it uses callee-saved registers and (if relevant) stack memory, since these are
 the equivalent of local variables in assembly code. For example,
-here is a comment taken from the implementation of the `imgproc_squash`
+here is a comment taken from the implementation of the `imgproc_expand`
 function in the reference solution:
 
 <a name='register-memory-comment'>
@@ -524,15 +529,16 @@ function in the reference solution:
 ```c
 /*
  * Register use:
- *   %r12 - saved pointer to input Image
- *   %r13 - saved pointer to output Image
- *   %r14d - row loop counter (i)
- *   %r15d - column loop counter (j)
- *   %ebx - saved pixel value
+ *   %r12 - pointer to input Image
+ *   %r13 - pointer to output Image
+ *   %r14d - output pixel row (i)
+ *   %r15d - output pixel column (j)
+ *   %ebx - computed pixel value
  *
  * Memory use:
- *   -8(%rbp) - saved xfac
- *   -4(%rbp) - saved yfac
+ *   -20(%rbp) - base address of PixelAverager instance
+ *   -24(%rbp) - 1 if row is odd, 0 if even
+ *   -28(%rbp) - 1 if column is odd, 0 if even
  */
 ```
 
@@ -662,6 +668,139 @@ using the `gdb` command
 ```
 print (unsigned long) *((unsigned long)($rbp - 32))
 ```
+
+### Template assembly language function
+
+Here is a possible starting template for your assembly language
+functions. It has the following properties:
+
+* 5 callee-saved registers (`%r12`-`%r15`, `%rbx`) are available
+  for general use
+* An ABI-compliant stack frame is created, using the `%rbp` register
+  to refer to stack memory
+* The stack pointer will be aligned correctly as long as `N` (the
+  number of bytes of stack memory to reserve) is an odd multiple
+  of 8 (i.e., 8, 24, 40, etc.)
+* You can use negative offsets from `%rbp` for variables allocated
+  in memory (if you run out of callee-saved registers, or if you
+  need to allocate a struct or array instance)
+
+Feel free to use this as a starting point for your assembly functions.
+
+```text
+/*
+ * Template assembly function
+ */
+	.globl my_func
+my_func:
+	/*
+	 * Register use:
+	 *   TODO: describe how callee-saved registers are used
+	 *
+	 * Memory use:
+	 *   TODO: describe how memory in the stack frame is used
+	 */
+
+	pushq %rbp
+	movq %rsp, %rbp
+	subq $N, %rsp
+	pushq %r12
+	pushq %r13
+	pushq %r14
+	pushq %r15
+	pushq %rbx
+
+	/* TODO: your code goes here */
+
+	popq %rbx
+	popq %r15
+	popq %r14
+	popq %r13
+	popq %r12
+	addq $N, %rsp
+	popq %rbp
+	ret
+```
+
+### Computing average pixel values
+
+The [`blur`](#the-blur-transformation) and [`expand`](#the-expand-transformation)
+both involve computing the average color component values of some number of pixels
+from the input image. The `expand` transformation also averages alpha values of
+some number of pixels.
+
+You may find it useful to introduce an abstraction to make it easy to
+sum the color component and alpha values of some number of pixels, and then
+(once all of the needed pixels have been looked at) compute a result
+pixel as the average of the color component and alpha values.
+
+The reference solution used the following struct type and helper functions
+for this purpose:
+
+```c
+// PixelAverager is helpful for the blur and expand transformations
+struct PixelAverager {
+  uint32_t r, g, b, a, count;
+};
+
+void pa_init( struct PixelAverager *pa );
+void pa_update( struct PixelAverager *pa, uint32_t pixel );
+void pa_update_from_img( struct Image *img,
+                         int32_t row, int32_t col,
+                         struct PixelAverager *pa );
+uint32_t pa_avg_pixel( struct PixelAverager *pa );
+```
+
+Note that the `pa_update_from_img` function is particularly convenient because
+it updates a `PixelAverager` instance based on a pixel at a specific
+row and column in an image, ignoring it if either the row or column is
+out of bounds. This can help you avoid needing bounds checks in the
+caller.
+
+The `struct PixelAverager` data type shown above is 20 bytes in size,
+since each field is a `uint32_t` requiring 4 bytes. If you use the
+[template function shown above](#template-assembly-language-function),
+just make sure that `N` is at least 24, and you can allocate memory
+in the stack frame for a `PixelAverager` instance. For example, the
+reference implementation uses offset -20 from the frame pointer
+(`%rbp`) as the base address of a `PixelAverager` instance. The
+`leaq` instruction is useful for computing a pointer to the instance.
+For example, when calling `pa_update_from_img`, you could pass the
+address of your `PixelAverager` as the fourth argument using code like
+
+```text
+leaq -20(%rbp), %rcx      /* pass ptr to PixelAverager as 4th arg */
+```
+
+If all of the fields are 4 bytes in size, then their offsets will
+be 0, 4, 8, etc. It's a good idea to use `#define` to give
+meaningful names to these offsets. E.g.:
+
+```c
+/*
+ * struct PixelAverager field offsets
+ */
+#define PA_R_OFFSET 0
+#define PA_G_OFFSET 4
+#define PA_B_OFFSET 8
+#define PA_A_OFFSET 12
+#define PA_COUNT_OFFSET 16
+```
+
+The "base address plus offset" addressing mode is useful for
+referring to struct fields if you have a pointer to the
+beginning of the struct. E.g., if `%rcx` points to a
+`struct PixelAverager`, you could increment the `count`
+field with the instruction
+
+```
+incl PA_COUNT_OFFSET(%rcx)
+```
+
+You are welcome to follow the approach described above if you wish.
+If you do, be sure to write good unit tests for these functions
+so that you can test both your C and assembly language
+implementations.
 
 ## Submitting
 
