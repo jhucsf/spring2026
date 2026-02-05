@@ -19,6 +19,9 @@ this semester's image transformations
 and [Computing average pixel values](#computing-average-pixel-values)
 sections.
 
+*Update 2/5* — minor edits to more accurately reflect the helper
+functions implemented in the reference implementation
+
 <div class='admonition danger'>
   <div class='title'>Warning!</div>
   <div class='content' markdown='1'>
@@ -69,13 +72,13 @@ TEST( test_get_g );
 TEST( test_get_b );
 TEST( test_get_a );
 TEST( test_make_pixel );
-//TEST( test_get_neighbor );
+//TEST( test_blur_pixel );
 ```
 
 The tests for `get_r`, `get_g`, `get_b`, `get_a`, and `make_pixel`
 are enabled because they are all test functions involved
 in the implementations of the transformations
-required for MS2. The test for `get_neighbor` 
+required for MS2. The test for `blur_pixel` 
 is commented out because it is used in the `blur`
 transformation, which is not part of the requirements for MS2.
 
@@ -287,9 +290,6 @@ Original image | Transformed image<br>
 :------------: | :---------------:
 <a href="img/ingo.png"><img style="width: 20em;" alt="original cat image" src="img/ingo.png"></a > | <a href="img/ingo_color_rotated.png"><img style="width: 20em;" alt="color rotated cat image " src="img/ingo_color_rotated.png"></a>
 
-
-
-
 ### The `blur` transformation
 
 The `blur` transformation transforms the input image using a blur effect.
@@ -432,9 +432,12 @@ uint32_t get_b( uint32_t pixel );
 uint32_t get_a( uint32_t pixel );
 uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 int32_t compute_index( struct Image *img, int32_t row, int32_t col );
-int get_neighbor( struct Image *img, int32_t row, int32_t col, uint32_t *out );
 uint32_t blur_pixel( struct Image *img, int32_t row, int32_t col, int32_t blur_dist );
+uint32_t rot_colors( struct Image *img, int32_t index );
 ```
+
+(Also see the [Computing average pixel values](#computing-average-pixel-values)
+section, which has suggestions for additional helper functions.)
 
 ## Image tests
 
@@ -593,13 +596,13 @@ If a unit test fails, you should use `gdb` to debug the code to determine
 why it is not working.
 
 Setting a breakpoint on the specific test function that is failing is
-one way to start. For example, if the `test_get_neighbor` test function
-is failing, in `gdb` set a breakpoint on the `get_neighbor` function, then run the
+one way to start. For example, if the `test_blur_pixel` test function
+is failing, in `gdb` set a breakpoint on the `blur_pixel` function, then run the
 program so that it only runs that test function:
 
 ```
-break test_get_neighbor
-run test_get_neighbor
+break test_blur_pixel
+run test_blur_pixel
 ```
 
 You will gain control of the program at the beginning of the test
@@ -608,11 +611,11 @@ variables, registers, and memory, etc.
 
 Another good option for setting a breakpoint is the `tctest_fail`
 function, because this is the function called when a test assertion
-fails. For example, assuming `test_get_neighbor` has an assertion failure:
+fails. For example, assuming `test_blur_pixel` has an assertion failure:
 
 ```
 break tctest_fail
-run test_get_neighbor
+run test_blur_pixel
 ```
 
 When the `tctest_fail` breakpoint is reached, use the `up` command (as many
