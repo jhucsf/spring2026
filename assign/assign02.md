@@ -56,7 +56,7 @@ just use the ones you implemented in Milestone 1.) Note that we will not officia
 grade the quality and comprehensiveness of your unit tests until Milestone 3.
 
 In Milestone 3, you will implement the
-[`blur`](#the-blur-transformation) blur transformation and
+[`blur`](#the-blur-transformation) transformation and
 [`expand`](#the-expand-transformation)
 transformations.
 
