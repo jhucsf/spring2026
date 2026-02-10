@@ -32,7 +32,7 @@ CAs:
 
 * Elena Vodychko, <evodych1@jh.edu>
 * Matthew Schricker, <mschric1@jh.edu>
-* Miseo Choi, <mchoi46@jhu.edu>
+* Minseo Choi, <mchoi46@jhu.edu>
 * Jason Lafita, <jlafita1@jh.edu>
 * Matthew Song, <msong29@jh.edu>
 * Brady Bock, <bbock4@jh.edu>
