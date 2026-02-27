@@ -31,6 +31,10 @@ Please email <daveho@cs.jhu.edu> if you need to get access to Courselore.
 
 ## News
 
+* **Feb 27** — [Assignment 3](assign/assign03.html) has three milestones,
+  due (respectively) Friday, March 6th, Wednesday, March 25th, and
+  Wednesday, April 1st. Note that late hours may not be used on
+  Milestone 1.
 * **Feb 22** — Exam 1 will take place in class Monday, March 2nd.
   The exam is closed book, closed notes. Review materials are available on
   the [Resources](resources.html) page. We will have a review session in
