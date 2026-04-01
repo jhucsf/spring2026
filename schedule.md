@@ -59,7 +59,7 @@ Apr 1 | Exam 2 review session |  | [A3](assign/assign03.html) MS3 due
 Apr 3 | **Exam 2** (in class) |  | 
 Apr 6 | [Unix I/O, files](lectures/lecture25-public.pdf) | *CSAPP* 10.1–10.11 | 
 Apr 8 | [Networks, Internet Protocol](lectures/lecture26-public.pdf) | *CSAPP* 11.1–11.3 | 
-Apr 10 | [Sockets, Application Protocols](lectures/lecture27-public.pdf), [sockets.zip (example code)](lectures/sockets.zip) | *CSAPP* 11.4 | <span class='tentative'>A4 due</span>
+Apr 10 | [Sockets, Application Protocols](lectures/lecture27-public.pdf), [sockets.zip (example code)](lectures/sockets.zip) | *CSAPP* 11.4 | [A4](assign/assign04.html) due
 Apr 13 | [Network applications, HTTP](lectures/lecture28-public.pdf), [webclient.zip (example code)](lectures/webclient.zip), [webserver.zip (example code)](lectures/webserver.zip) | *CSAPP* 11.4–11.6 | 
 Apr 15 | [Concurrency with pthreads](lectures/lecture29-public.pdf), [mt_webserver.zip (example code)](lectures/mt_webserver.zip) | *CSAPP* 12.3 | 
 Apr 17 | [Thread synchronization](lectures/lecture30-public.pdf), [synch.zip (example code)](lectures/synch.zip) | *CSAPP* 12.4–12.5 | <span class='tentative'>A5 MS1 due</span>

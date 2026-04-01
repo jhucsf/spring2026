@@ -31,6 +31,7 @@ Please email <daveho@cs.jhu.edu> if you need to get access to Courselore.
 
 ## News
 
+* **Apr 1** — [Assignment 4](assign/assign04.html) is due Friday, April 10th.
 * **Mar 25** — Exam 2 will take place on Friday, April 3rd.
   Review materials are available on the [Resources](resources.html) page.
   We will have a review session on Wednesday, April 1st: please being
