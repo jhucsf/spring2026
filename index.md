@@ -31,6 +31,8 @@ Please email <daveho@cs.jhu.edu> if you need to get access to Courselore.
 
 ## News
 
+* **Apr 10** — [Assignment 5](assign/assign05.html) has two milestones, due
+  (respectively) Monday, April 20th and Monday, April 27th.
 * **Apr 1** — [Assignment 4](assign/assign04.html) is due Friday, April 10th.
 * **Mar 25** — Exam 2 will take place on Friday, April 3rd.
   Review materials are available on the [Resources](resources.html) page.
