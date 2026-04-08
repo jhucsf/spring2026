@@ -78,8 +78,9 @@ which together form a restaurant order system. The general idea is that
 this system could be used to keep track of current orders in a restaurant,
 encompassing point of sale (order entry), display (so the workers in the
 kitchen can see what needs to be prepared), and updating the status of
-orders (so that the back of house staff can deliver food to the
-wait staff when it is ready.)
+orders (so that the back of house staff can see which items still need to
+be prepared, and deliver the food to the wait staff when the items are
+ready.)
 
 The server maintains a collection of *orders*. Each order is a collection
 of *items*. Full details about orders and items are given in the
@@ -104,13 +105,15 @@ The *object model* is the collection of data types representing orders, items, a
 their statuses. All of these types are defined in the `include/model.h` header file.
 
 `OrderStatus` is an enumeration type representing the status of an order. Its
-members are `INVALID`, `NEW`, `IN_PROGRESS`, `DONE`, and `DELIVERED`. (Note that `INVALID`
+members are `OrderStatus::INVALID`, `OrderStatus::NEW`, `OrderStatus::IN_PROGRESS`,
+`OrderStatus::DONE`, and `OrderStatus::DELIVERED`. (Note that `OrderStatus::INVALID`
 is not a valid status, and is used only to represent the absence of a valid
 order status.)
 
 `ItemStatus` is an enumeration type representing the status of an item within an
-order. Its members are `INVALID`, `NEW`, `IN_PROGRESS`, and `DONE`. (As with
-`OrderStatus`, the `INVALID` member is not a valid status.)
+order. Its members are `ItemStatus::INVALID`, `ItemStatus::NEW`, `ItemStatus::IN_PROGRESS`,
+and `ItemStatus::DONE`. (As with `OrderStatus`, the `ItemStatus::INVALID` member
+is not a valid status.)
 
 The `Order` class represents an order and its constituent items. It has a unique
 integer identifier, and `OrderStatus` value, and a collection of item objects.
@@ -120,6 +123,39 @@ the unique id of the order the item is part of), an integer item id (which is
 unique within the overall order), an `ItemStatus` value, a description string, and
 an integer quantity (which must be positive).
 
+The `Order` and `Item` classes have a variety of accessor functions for inspecting
+and modifying their data.
+
+## Messages
+
+A *message* is a bundle of information sent from client to server (a "request")
+or from server to client (a "response"). The `Message` class, defined in
+`include/message.h`, represents one message.
+
+The `MessageType` enumeration defines the various types of messages. These will
+be described in more detail in the [Protocol](#protocol) section.
+
+The `Message` class is designed to be able to represent any message.
+Each message type has a specific combination of data values it contains.
+So, the `Message` class's fields and accessor functions represent the
+union of all data values a single message could contain.
+
 ### Protocol
 
-TODO
+The following table summarizes the message types, which program sends
+messages of that type, and what information a message of that type will
+contain.
+
+Message type                      | Sent by            | Reeived by         | Contained data values
+--------------------------------- | ------------------ | ------------------ | ---------------------
+`MessageType::LOGIN`              | updater or display | server             | client mode, string
+`MessageType::QUIT`               | updater            | server             | string
+`MessageType::ORDER_NEW`          | updater            | server             | order
+`MessageType::ITEM_UPDATE`        | updater            | server             | order id, item id, item status
+`MessageType::ORDER_UPDATE`       | updater            | server             | order id, order status
+`MessageType::OK`                 | server             | updater or display | string
+`MessageType::ERROR`              | server             | updater or display | string
+`MessageType::DISP_ORDER`         | server             | display            | order
+`MessageType::DISP_ITEM_UPDATE`   | server             | display            | order id, item id, item status
+`MessageType::DISP_ORDER_UPDATE`  | server             | display            | order id, order status
+`MessageType::DISP_HEARTBEAT`     | server             | display            | *none*
