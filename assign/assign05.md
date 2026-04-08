@@ -15,6 +15,50 @@ is worth 1/6 of the assignments grade for the course, the same as
 Note that you may **not** use late hours on Milestone 2.
 Please plan accordingly.
 
+## Quick Guide
+
+Here are the high-level steps we recommend for completing the assignment.
+
+For Milestone 1:
+
+1. Implement the `Wire::encode` and `Wire::decode` functions.
+   Get all of the unit tests in the `message_tests` unit test program
+   working.
+2. Implement the `IO::send` and `IO::receive` functions.
+   Get all of the unit tests in the `io_tests` test program
+   working.
+3. Implement the `updater` client and test it
+4. Implement the `display` client and test it
+
+For Milestone 2:
+
+1. Implement the `Server::server_loop` member function so that
+   the server listens for TCP connections from clients. For each
+   client that connects, create a `Client` object, and in a new
+   detached thread, call its `chat` member function to communicate
+   with the remote client.
+2. Implement the `Client::chat` member function sufficiently that
+   the client can log in
+3. Add functionality to the `Client` and `Server` classes to implement
+   the required server functionality. You'll need to add a central
+   data structure to `Server` to keep track of orders, and use
+   appropriate synchronization so that client threads can access the
+   data concurrently.
+4. Implement the protocol for communicating with an updater client.
+   This will involve code in both `Server` and `Client`.
+5. Implement the protocol for communicating with a display client.
+   Each `Client` should have a `MessageQueue` object that the
+   code in the `Server` object can use to post messages to be
+   sent to the remote display client program which the state of
+   any order or item changes. You'll need to implement the
+   `MessageQueue::enqueue` and `MessageQueue::dequeue` member
+   functions.
+
+Milestone 2 tasks 3–5 will likely be the most challenging ones, although they
+should only involve a couple hundred lines of code, which should be
+fairly straightforward if you have thought about the problem and
+determined how to factor the problem into helper functions.
+
 ## Grading Criteria
 
 TODO
