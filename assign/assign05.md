@@ -59,6 +59,26 @@ should only involve a couple hundred lines of code, which should be
 fairly straightforward if you have thought about the problem and
 determined how to factor the problem into helper functions.
 
+## This Assignment Description is Complicated, Help!
+
+Specifying the intended behavior of a networked application entails
+some complexity. This assignment description aims to document everything
+you need to know to implement the server and clients for the
+restaurant order system.
+
+The good news is that the assignment skeleton file (see
+[Getting Started](#getting-started) includes reference executables
+for all three programs. You can use them as reference for how
+your programs should work. Also, you can use them to test your
+programs. For example, in Milestone 1, it will make sense to use
+the reference server implementation to test your client program
+implementations against.
+
+Also, the two unit test programs should make it fairly straightforward
+to implement encoding, decoding, sending, and receiving of messages.
+Once that code works, implementing the actual application protocol
+is relatively easy, and fun!
+
 ## Grading Criteria
 
 TODO
@@ -126,7 +146,7 @@ an integer quantity (which must be positive).
 The `Order` and `Item` classes have a variety of accessor functions for inspecting
 and modifying their data.
 
-## Messages
+### Messages
 
 A *message* is a bundle of information sent from client to server (a "request")
 or from server to client (a "response"). The `Message` class, defined in
@@ -159,3 +179,12 @@ Message type                      | Sent by            | Reeived by         | Co
 `MessageType::DISP_ITEM_UPDATE`   | server             | display            | order id, item id, item status
 `MessageType::DISP_ORDER_UPDATE`  | server             | display            | order id, order status
 `MessageType::DISP_HEARTBEAT`     | server             | display            | *none*
+
+The protocols implemented by the server, updater client, and display
+client, are described by the following state machines.
+
+*TODO: server state machine*
+
+*TODO: updater state machine*
+
+*TODO: display state machine*
