@@ -78,7 +78,7 @@ you need to know to implement the server and clients for the
 restaurant order system.
 
 The good news is that the assignment skeleton file (see
-[Getting Started](#getting-started) includes reference executables
+[Getting Started](#getting-started)) includes reference executables
 for all three programs. You can use them as reference for how
 your programs should work. Also, you can use them to test your
 programs. For example, in Milestone 1, it will make sense to use
@@ -103,6 +103,30 @@ To get started, download [csf\_assign05.zip](csf_assign05.zip) and unzip it.
 In the extracted `csf_assign05` directory, the `include` directory has header
 files and the `src` directory has C++ source files. The `build` directory is
 where compiled object files and executable files will be generated.
+
+Generating header file dependencies (do this before compiling
+for the first time, or any time you add or change any `#include`
+directives):
+
+```bash
+make depend
+```
+
+To compile all executables:
+
+```bash
+make -j8
+```
+
+The `-j8` option tells `make` to use up to 8 processes to run commands,
+allowing you to take advantage of multiple CPU cores. You can adjust the
+number to adjust the degree of parallelism.
+
+The `ref` directory contains the `server`, `updater`, and `display`
+executables compiled from the reference solution. They demonstrate the
+expected functionality, and you can use them to test your clients and
+server. (I.e., you can use the reference server to test your clients,
+and the reference clients to test your server.)
 
 ## Overview
 
