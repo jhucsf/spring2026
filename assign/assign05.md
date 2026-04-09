@@ -329,3 +329,35 @@ IO::receive(fd, s);
 Wire::decode(s, m);
 // m now contains the received message
 ```
+
+## Implementation details
+
+This section has further information about implementing the clients and server.
+
+### Shared Pointers
+
+The model object classes (`Order` and `Item`) consistently use `std::shared_ptr`
+to manage objects. This approach has some important advantages:
+
+* `std::shared_ptr` uses reference counting, and deletes the managed object
+  when the last pointer to it goes out of scope; this is a simple form
+  of garbage collection, and ensures that allocated objects won't be leaked
+* because objects managed by `std::shared_ptr` are dynamically allocated,
+  they are safe to transfer from one thread to another
+
+If you want to create an object to be managed by `std::shared_ptr`, don't use
+the `new` operator, use the `std::make_shared` function. Its syntax is
+
+> <code>std::make_shared&lt;<i>ClassName</i>&gt;(<i>ConstructorArgs</i>)</code>
+
+where *ClassName* is the name of the class you want the new managed object to be
+an instance of, and *ConstructorArgs* are any arguments you want to pass to the
+constructor of the new object. For example, if `order` is a `std::shared_ptr`
+managing an `Order` object, and you want to create a shared pointer to a new
+`Message` object that you can use to broadcast that order to display clients as
+a `MessageType::DISP_ORDER_NEW` message, you could use the code
+
+```c++
+auto order_new_msg =
+  std::make_shared<Message>(MessageType::DISP_ORDER_NEW, order);
+```
