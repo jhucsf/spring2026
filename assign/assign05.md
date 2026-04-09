@@ -217,7 +217,7 @@ Note the following special cases in the server's state machines (indicated with
 the \*, †, and ‡ symbols in the state diagram):
 
 \* When a new order is created and added to the collection, the server should
-enqueue a `MessageType::DISP_ORDER_NEW` message containing the order data to
+enqueue a `MessageType::DISP_ORDER` message containing the order data to
 the message queues of each active display client.
 
 † When a `MessageType::ITEM_UPDATE` message is successfully processed, the server
@@ -258,7 +258,7 @@ base 10 digits. You can use the `std::to_string` function to do this conversion.
 (respectively) the `Wire::order_status_to_str` and `Wire::item_status_to_str`
 functions.
 
-`MessageType::ORDER_NEW` and `MessageType::DISP_ORDER_NEW` messages contain an
+`MessageType::ORDER_NEW` and `MessageType::DISP_ORDER` messages contain an
 `Order` as the payload value. An `Order` is converted to a string
 consisting of the order id, order status, and item list, separacter by comma
 ("`,`") characters. The item list is a sequence of 1 or more items, separated
@@ -359,11 +359,11 @@ an instance of, and *ConstructorArgs* are any arguments you want to pass to the
 constructor of the new object. For example, if `order` is a `std::shared_ptr`
 managing an `Order` object, and you want to create a shared pointer to a new
 `Message` object that you can use to broadcast that order to display clients as
-a `MessageType::DISP_ORDER_NEW` message, you could use the code
+a `MessageType::DISP_ORDER` message, you could use the code
 
 ```c++
 auto order_new_msg =
-  std::make_shared<Message>(MessageType::DISP_ORDER_NEW, order);
+  std::make_shared<Message>(MessageType::DISP_ORDER, order);
 ```
 
 Note that shared pointers should be passed by value and returned by value
@@ -477,3 +477,87 @@ of the form
 to `std::cerr`, where *explanation* is any arbitrary text. In addition, if
 an error message is printed, the program should exit with a non-zero
 exit code to indicate failure.
+
+### The Display Client
+
+The display client implements a basic information display showing the status
+of all orders currently in the system.
+
+It is invoked with the command
+
+```
+./build/display HOSTNAME PORT
+```
+
+where (as with the updater program) `HOSTNAME` is the hostname or IP address
+of the system where the server is running, and `PORT` is the TCP port the
+server is listening on.
+
+The display client will prompt the user for a username and password
+in exactly the same way as the updater client. A login failure should
+be handled the same way as the updater client.
+
+If the login is successful, the display client should clear the screen by
+printing the contents of the `CLEAR_SCREEN` string to `std::cout`. Note that
+you will need to flush the output buffer to make sure the contents of this
+string are sent right away, i.e.
+
+```c++
+std::cout << CLEAR_SCREEN << std::flush;
+```
+
+Once the server responds with the `MessageType::OK` response to the
+`MessageType::LOGIN` request, the display client should enter a loop
+where it receives messages from the server. These messages should be handled
+as follows:
+
+`MessageType::DISP_ORDER`
+: Add a new order to the collection of orders
+
+`MessageType::DISP_ITEM_UPDATE`
+: Update the status of a specific item within one of the current orders
+
+`MessageType::DISP_ORDER_UPDATE`
+: Update the status of a specific current order
+
+`MessageType::DISP_HEARTBEAT`
+: Do nothing; these messages are sent by the server only to detect display clients no longer connected
+
+For all received messages other than `MessageType::DISP_HEARTBEAT` messages,
+after processing the received message, the client should clear the screen,
+and then refresh the display by printing the information in all orders.
+The orders should be printed in increasing order by order id. (Hint: using a
+`std::map` to manage the collection of current orders will make this easy.)
+
+The format for printing each order is as follows.
+
+To begin printing an order, print (to `std::cout`) a line of the form
+
+<div class='highlighter-rouge'><pre>
+Order <i>OrderId</i>: <i>OrderStatus</i>
+</pre></div>
+
+where *OrderId* is the order id, and *OrderStatus* is the order status.
+
+Next, print each item, in the order in which the items appeared in the
+earlier `MessageType::DISP_ORDER` message which added the order to the
+display.
+
+Printing an item consists of two lines. The first line has the form
+
+<div class='highlighter-rouge'><pre>
+  Item <i>ItemId</i>: <i>ItemStatus</i>
+</pre></div>
+
+where *ItemId* is the item id, and *ItemStatus* is the item status,
+and the second line has the form
+
+<div class='highlighter-rouge'><pre>
+    <i>ItemDescription</i>, Quantity <i>Qty</i>
+</pre></div>
+
+where *ItemDescription* is the item description string, and
+*Qty* is the item quantity.
+
+Note that the first line of an item is preceded by two spaces,
+and the second line of an item is preceded by four spaces.
