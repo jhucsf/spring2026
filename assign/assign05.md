@@ -180,11 +180,31 @@ Message type                      | Sent by            | Reeived by         | Co
 `MessageType::DISP_ORDER_UPDATE`  | server             | display            | order id, order status
 `MessageType::DISP_HEARTBEAT`     | server             | display            | *none*
 
-The protocols implemented by the server, updater client, and display
-client, are described by the following state machines.
+The protocols implemented by the updater client, display
+client, and server are described by the following state machines.
+In each state machine, the nodes (circles) represent states,
+and the transitions (arrows) represent events. Each transition
+involves either sending or receiving a message. The "Start"
+node represents the initial state, and the "Done" node indicates
+that the conversation has finished and the network connection
+will be terminated.
 
-*TODO: server state machine*
+Note that the edge labels in <span style="color: #800080;">purple</span>
+represent interactive commands that the user enters.
 
-*TODO: updater state machine*
+<div class='admonition tip'>
+  <div class='title'>State machines</div>
+  <div class='content' markdown=1>
+The state machine diagrams are SVG files. You can view them in a separate
+tab (right click and choose "Open Image in New Tab"), or save them to a file
+and use a vector image program to view or print them.
+  </div>
+</div>
+
+**Updater state machine**:
+
+![Updater state machine diagram](img/assign05/updater-sm.svg)
 
 *TODO: display state machine*
+
+*TODO: server state machine*
