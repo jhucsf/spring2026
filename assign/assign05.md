@@ -200,8 +200,8 @@ represent interactive commands that the user enters.
 
 **Display state machine**:
 
-<a href="img/assign05/display-sm.svg">
-  <img style="width: 32em;" alt="Display state machine diagram" src="img/assign05/display-sm.svg">
+<a style="margin-left: 6em;" href="img/assign05/display-sm.svg">
+  <img style="width: 36em;" alt="Display state machine diagram" src="img/assign05/display-sm.svg">
 </a>
 
 <!--
