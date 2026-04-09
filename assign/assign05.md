@@ -23,10 +23,10 @@ For Milestone 1:
 
 1. Implement the `Wire::encode` and `Wire::decode` functions.
    Get all of the unit tests in the `message_tests` unit test program
-   working.
+   working. (See the [Encoding](#encoding) section.)
 2. Implement the `IO::send` and `IO::receive` functions.
    Get all of the unit tests in the `io_tests` test program
-   working.
+   working. (See the [Framing](#framing) section.)
 3. Implement the `updater` client and test it
 4. Implement the `display` client and test it
 
@@ -238,7 +238,8 @@ client.
 
 In order to be sent and received via a TCP connection, a message is represented
 as a string, i.e., a sequence of bytes. The `Wire::encode` and `Wire::decode`
-functions implement conversion of a `Message` object to and from a string representation.
+functions (in `src/wire.cpp`) implement conversion of a `Message` object to and
+from a string representation.
 
 In the table of message types in the [Protocol](#protocol) section, you
 will note that the last column is called "Contained data values". The
@@ -267,3 +268,64 @@ each separated by colon ("`:`") characters.
 
 Note that you may assume that the separator characters "`|`", "`,`", "`;`", and
 "`:`" will never occur in a string value within an encoded message.
+
+The `message_tests` unit test program (`make build/message_tests`) has fairly
+comprehensive unit tests for message encoding and decoding. When you reach
+the point where all of the unit tests pass, you can have confidence that
+your implementations of `Wire::encode` and `Wire::decode` are working correctly.
+
+### Framing
+
+Framing is the problem of determining where transmitted messages begin and
+end. The framing format for messages in the restaurant order system consists
+of a four-digit length value, followed by an encoded message string, followed
+by a single newline ("`\n`") character. The length value specifies the number
+of bytes comprised by the encoded message string and the newline. For example,
+to frame the encoded message `OK|successful login`, the length value would
+be `0020`, since the encoded message is 19 characters long, and the newline
+contributes one extra character, for a total length of 20.
+
+This framing scheme is an example of *run-length encoding*, which means that
+messages are preceded by the exact length of the message contents to follow,
+so that when receiving a message, the received can read the length (a known
+number of bytes), and then know exactly how many additional bytes to expect.
+Contrast this approach with a "terminating sentinel" style of framing, where
+the end of a message is indicated by a special sentinel character or character
+sequence.
+
+The `IO::send` and `IO::receive` functions (in `src/io.cpp`) frame and
+unframe a string value (i.e., an encoded message). `IO::send` writes the
+framed string to a file descriptor (e.g., a TCP socket), and `IO::receive`
+reads a framed string from a file descriptor. Note that these functions
+should throw `IOException` if any I/O error or EOF occurs.
+
+The `io_tests` unit test program (`make io_tests`) tests the implementation
+of `IO::send` and `IO::receive`. Once these tests pass, you can be
+reasonably confident that your implementations of `IO::send` and `IO::receive`
+are working well.
+
+### Sending and Receiving Messages
+
+Once you have the encoding and framing functions working, it is very
+easy to send and receive messages.
+
+Let's say that a `Message` object `m` represents a message you want to send,
+and that `fd` is the file descriptor of the TCP socket connecting to the
+remote peer application.  You can do so with the code
+
+```c++
+std::string s;
+Wire::encode(m, s);
+IO::send(s, fd);
+```
+
+Similarly, if you want to receive a message from the remote peer, the code
+would be something like
+
+```c++
+Message m;
+std::string s;
+IO::receive(fd, s);
+Wire::decode(s, m);
+// m now contains the received message
+```
