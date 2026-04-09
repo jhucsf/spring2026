@@ -15,6 +15,16 @@ is worth 1/6 of the assignments grade for the course, the same as
 Note that you may **not** use late hours on Milestone 2.
 Please plan accordingly.
 
+<div class='admonition info'>
+  <div class='title'>Note</div>
+  <div class='content' markdown='1'>
+This is a preliminary assignment description. It has all of the information
+you will need to begin working on Milestone 1. We will be updating the assignment
+description with information you will need for Milestone 2, as well as
+more information about how you can test your code.
+  </div>
+</div>
+
 ## Quick Guide
 
 Here are the high-level steps we recommend for completing the assignment.
@@ -59,8 +69,9 @@ should only involve a couple hundred lines of code, which should be
 fairly straightforward if you have thought about the problem and
 determined how to factor the problem into helper functions.
 
-## This Assignment Description is Complicated, Help!
-
+<div class='admonition caution'>
+  <div class='title'>This is Complicated, Help!</div>
+  <div class='content' markdown='1'>
 Specifying the intended behavior of a networked application entails
 some complexity. This assignment description aims to document everything
 you need to know to implement the server and clients for the
@@ -78,6 +89,8 @@ Also, the two unit test programs should make it fairly straightforward
 to implement encoding, decoding, sending, and receiving of messages.
 Once that code works, implementing the actual application protocol
 is relatively easy, and fun!
+  </div>
+</div>
 
 ## Grading Criteria
 
@@ -611,7 +624,7 @@ In general, if your program uses exceptions, it should also use RAII
 consistently to clean up resources.
 
 [`std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr.html)
-is useful for implementing RAII for dynamically allocated objects. For example,
+is useful for implementing RAII for a dynamically allocated object. For example,
 in the server, you should pass a pointer to a dynamically allocated object to the
 thread start function of a thread tasked with communicating with a client, in
 order to give the thread the access to the resources it needs. A `std::unique_ptr`
