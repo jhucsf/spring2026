@@ -192,19 +192,22 @@ will be terminated.
 Note that the edge labels in <span style="color: #800080;">purple</span>
 represent interactive commands that the user enters.
 
-<div class='admonition tip'>
-  <div class='title'>State machines</div>
-  <div class='content' markdown=1>
-The state machine diagrams are SVG files. You can view them in a separate
-tab (right click and choose "Open Image in New Tab"), or save them to a file
-and use a vector image program to view or print them.
-  </div>
-</div>
-
 **Updater state machine**:
 
+<a href="img/assign05/updater-sm.svg">
+  <img style="width: 48em;" alt="Updater state machine diagram" src="img/assign05/updater-sm.svg">
+</a>
+
+**Display state machine**:
+
+<a href="img/assign05/display-sm.svg">
+  <img style="width: 32em;" alt="Display state machine diagram" src="img/assign05/display-sm.svg">
+</a>
+
+<!--
 ![Updater state machine diagram](img/assign05/updater-sm.svg)
 
-*TODO: display state machine*
+![Display state machine diagram](img/assign05/display-sm.svg)
+-->
 
 *TODO: server state machine*
