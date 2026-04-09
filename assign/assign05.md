@@ -350,7 +350,9 @@ has some important advantages:
 If you want to create an object to be managed by `std::shared_ptr`, don't use
 the `new` operator, use the `std::make_shared` function. Its syntax is
 
-> <code>std::make_shared&lt;<i>ClassName</i>&gt;(<i>ConstructorArgs</i>)</code>
+<div class='highlighter-rouge'><pre>
+std::make_shared&lt;<i>ClassName</i>&gt;(<i>ConstructorArgs</i>)
+</pre></div>
 
 where *ClassName* is the name of the class you want the new managed object to be
 an instance of, and *ConstructorArgs* are any arguments you want to pass to the
@@ -366,3 +368,112 @@ auto order_new_msg =
 
 Note that shared pointers should be passed by value and returned by value
 if you need to pass them to or return them from functions.
+
+### The Updater Client
+
+The updater client encapsulates both point-of-sale functionality (e.g.,
+creating new orders) and back of house functionality (updating the status
+of items and orders.)
+
+The updater client is invoked as
+
+```
+./build/updater HOSTNAME PORT
+```
+
+where `HOSTNAME` is the hostname or IP address the server is running on,
+and `PORT` is the TCP port number on which the server is listening for
+connections.
+
+When the updater client starts, it should prompt the user to enter a username
+and password using the prompt text "`username: `" and "`password: `".
+(Note that there is a space after the colon in each prompt, and also that
+the program should not print a newline after the prompt.)
+
+The updater client should combine the entered username and password into a
+single credential string of the form "`username/password`", and send it to the
+server as a `MessageType::LOGIN` message.  The server will respond with
+either a `MessageType::OK` or `MessageType::ERROR` message. If an ok response is
+received, the client continues to execute the command loop. Otherwise it prints an
+error message of the form
+
+<div class='highlighter-rouge'><pre>
+Error: <i>error text</i>
+</pre></div>
+
+to `std::cerr` where *error text* is the string payload of the `MessageType::ERROR`
+message received from the server.
+
+The command loop works as follows. The client prints the prompt "`> `" and
+reads a line of text, which is the command name. Commands are handled as follows:
+
+`quit`: The client sends a `MessageType::QUIT` message to the server and
+receives the server's response. The server should send back a `MessageType::OK`
+message, and the client exits with an exit code of 0.
+
+`order_new`: The client reads an integer number of items. Then, it reads
+exactly that many items. Each item is read by reading an integer item id,
+an item description string, and an integer quantity. The client then sends
+a `MessageType::ORDER_NEW` message containing an order with the specified
+items. The order id of the new order should be set to 1. The server will
+respond with a `MessageType::OK` message. The text in that message will
+have the form
+
+<div class='highlighter-rouge'><pre>
+<code>Created order id <i>OrderId</i></code>
+</pre></div>
+
+where *OrderId* is the actual order id assigned to the order.
+
+`item_update`: The client reads an order id, item id, and item status.
+It sends a `MessageType::ITEM_UPDATE` message with the information entered.
+The server responds with a `MessageType::OK` or `MessageType::ERROR` message.
+
+`order_update`: The client reads an order id and an order status.
+It sense a `MessageType::ORDER_UPDATE` message with the information entered.
+The server responds with a `MessageType::OK` or `MessageType::ERROR` message.
+
+Note that when reading the additional values entered by the user
+for the `order_new`, `item_update`, and `order_update` commands, each value
+is read on a separate line, and the client should *not* print a prompt
+for any of the entered values. You should use `std::getline` to ensure that
+a complete line of text is read.
+
+Note that there is no requirement to do anything special to handle invalid
+commands or input values. When testing your updater client, the autograder will
+only provide well-formed input.
+
+For the `order_new`, `item_update`, and `order_update` commands, if the
+server responds with `MessageType::OK`, the client should print a success
+message to `std::cout` of the form
+
+<div class='highlighter-rouge'><pre>
+<code>Success: <i>text</i></code>
+</pre></div>
+
+where *text* is the string payload of the received message. If the
+server responds with `MessageType::ERROR`, the client should print a failure
+message to `std::cout` of the form
+
+<div class='highlighter-rouge'><pre>
+<code>Failure: <i>text</i></code>
+</pre></div>
+
+where *text* is the string payload of the received message.
+
+Note that for these commands (the commands other than `quit`) the
+command loop continues regardless of whether the response received
+was `MessageType::OK` or `MessageType::QUIT`.
+
+If any I/O errors occur, if any invalid or incorrectly-formed message data is
+received, or if the server does not correctly implement the protocol as described
+in the [Protocol](#protocol) section, the client should print an error message
+of the form
+
+<div class='highlighter-rouge'><pre>
+<code>Error: <i>explanation</i></code>
+</pre></div>
+
+to `std::cerr`, where *explanation* is any arbitrary text. In addition, if
+an error message is printed, the program should exit with a non-zero
+exit code to indicate failure.
