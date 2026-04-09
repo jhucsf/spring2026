@@ -561,3 +561,62 @@ where *ItemDescription* is the item description string, and
 
 Note that the first line of an item is preceded by two spaces,
 and the second line of an item is preceded by four spaces.
+
+Note that once the username and password have been entered, the display
+client does not read any further user input. You can terminate a display
+client by typing Control-C in the terminal it's running in.
+
+### The Server
+
+*More details coming soon!*
+
+### Exceptions, RAII
+
+We highly recommend using exceptions to deal with any exceptional circumstance
+that means that control cannot continue normally in the program.
+
+Some useful exception types are defined in `include/except.h`.
+
+`Wire::decode`, `IO::send`, and `IO::receive` are required to throw
+`InvalidMessage` and `IOException` exceptions as appropriate. When any program
+(client or server) encounters an improperly-formed or improperly-framed
+message, or when an I/O error or EOF condition occurs when reading from
+or writing to a TCP socket, the program should immediately cease communication
+with the remote peer. By letting these exceptions propagate naturally,
+you should be handle them with a single high-level `try`/`catch` construct.
+
+The `ProtocolError` exception type is meant to represent a situation where
+a properly-formed message was received, but it violates the protocol as
+defined by the relevant state machine. When a remote peer violates the protocol,
+the program should immediately cease communication with the remote peer.
+
+The `SemanticError` exception type is intended to be used by the server for
+situations where a message was properly formed, and did not violate the
+protocol state machine, but the operation embodied by the message was
+not semantically correct. For example, an order cannot have its status changed
+unless its status is `OrderStatus::DONE`, and the only valid order update
+that can be requested by an updater client is to change the order status
+from `OrderStatus::DONE` to `OrderStatus::DELIVERED`. If a member function in
+the `Server` class detects that these rules have been violated, it can throw
+`SemanticError`. This is a useful exception type because it can be caught
+in order to detect that the operation requested by the client is invalid,
+and the server can send back a `MessageType::ERROR` message in response.
+
+"RAII" stands for "Resource Acquisition Is Initialization", and is a C++
+philosophy that advocates using a scoped local object to ensure the
+release of a resource when it is no longer needed. Because destructors
+for local objects are called regardless of how control leaves a scope,
+they can ensure that a resource is cleaned up even an exception is thrown.
+In general, if your program uses exceptions, it should also use RAII
+consistently to clean up resources.
+
+[`std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr.html)
+is useful for implementing RAII for dynamically allocated objects. For example,
+in the server, you should pass a pointer to a dynamically allocated object to the
+thread start function of a thread tasked with communicating with a client, in
+order to give the thread the access to the resources it needs. A `std::unique_ptr`
+is a useful way to ensure that this object gets cleaned up before the thread
+exist. A mutex guard object implements RAII for a critical section, ensuring
+that the mutex is released. For the client programs, you might find it useful
+to use RAII to ensure that the client file descriptor gets closed before
+the program terminates.
