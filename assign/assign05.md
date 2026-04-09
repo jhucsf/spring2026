@@ -336,8 +336,10 @@ This section has further information about implementing the clients and server.
 
 ### Shared Pointers
 
-The model object classes (`Order` and `Item`) consistently use `std::shared_ptr`
-to manage objects. This approach has some important advantages:
+The model object classes (`Order`, `Item`, `Message`), and classes designed to be
+containers for model objects (e.g., `Message` and `MessageQueue`) consistently
+use `std::shared_ptr` to manage dynamically allocated objects. This approach
+has some important advantages:
 
 * `std::shared_ptr` uses reference counting, and deletes the managed object
   when the last pointer to it goes out of scope; this is a simple form
@@ -361,3 +363,6 @@ a `MessageType::DISP_ORDER_NEW` message, you could use the code
 auto order_new_msg =
   std::make_shared<Message>(MessageType::DISP_ORDER_NEW, order);
 ```
+
+Note that shared pointers should be passed by value and returned by value
+if you need to pass them to or return them from functions.
