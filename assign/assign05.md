@@ -204,10 +204,32 @@ represent interactive commands that the user enters.
   <img style="width: 36em;" alt="Display state machine diagram" src="img/assign05/display-sm.svg">
 </a>
 
-<!--
-![Updater state machine diagram](img/assign05/updater-sm.svg)
+**Server state machine**:
 
-![Display state machine diagram](img/assign05/display-sm.svg)
--->
+<a href="img/assign05/server-sm.svg">
+  <img style="width: 48em;" alt="Server state machine diagram" src="img/assign05/server-sm.svg">
+</a>
 
-*TODO: server state machine*
+The server state machine describes the protocol implementing a conversation
+between the server and one client.
+
+Note the following special cases in the server's state machines (indicated with
+the \*, †, and ‡ symbols in the state diagram):
+
+\* When a new order is created and added to the collection, the server should
+enqueue a `MessageType::DISP_ORDER_NEW` message containing the order data to
+the message queues of each active display client.
+
+† When a `MessageType::ITEM_UPDATE` message is successfully processed, the server
+should enqueue a `MessageType::DISP_ITEM_UPDATE` message containing the item id
+and new item status to the message queues of each active display client. Also,
+if as a result of applying the item update, the order status transitions from
+`OrderStatus::NEW` to `OrderStatus::IN_PROGRESS`, or if the order status
+transitions from `OrderStatus::IN_PROGRESS` to `OrderStatus::DONE`, the server
+should enqueue a `MessageType::ORDER_UPDATE` with the order id and new order status
+to the message queues of each active display client.
+
+‡ When a `MessageType::ORDER_UPDATE` message is successfully processed, the
+server should enqueue a `MessageType::DISP_ORDER_UPDATE` message with the
+order id and new order status to the message queues of each active display
+client.
