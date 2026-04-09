@@ -112,7 +112,7 @@ orders and their constituent items.
 
 The clients and server communicate with each other by sending *messages*.
 Full details about messages, their encoding, and the general network protocol
-are given in the [Protocol](#protocol) section.
+are given in the [Protocol](#protocol) and [Encoding](#encoding) sections.
 
 ## Restaurant Order System
 
@@ -233,3 +233,37 @@ to the message queues of each active display client.
 server should enqueue a `MessageType::DISP_ORDER_UPDATE` message with the
 order id and new order status to the message queues of each active display
 client.
+
+### Encoding
+
+In order to be sent and received via a TCP connection, a message is represented
+as a string, i.e., a sequence of bytes. The `Wire::encode` and `Wire::decode`
+functions implement conversion of a `Message` object to and from a string representation.
+
+In the table of message types in the [Protocol](#protocol) section, you
+will note that the last column is called "Contained data values". The
+entries in this column describe the "payload" of the message. The string
+representation of a message consists of the message type, followed by the
+contained data values (in order), with all items separated by a single
+"`|`" character.
+
+A `MessageType` value can be converted to a string using the
+`Wire::message_type_to_str` function.
+
+Integer data values such as order id and item id are encoded as a sequence of
+base 10 digits. You can use the `std::to_string` function to do this conversion.
+
+`OrderStatus` and `ItemStatus` values can be converted to a string using
+(respectively) the `Wire::order_status_to_str` and `Wire::item_status_to_str`
+functions.
+
+`MessageType::ORDER_NEW` and `MessageType::DISP_ORDER_NEW` messages contain an
+`Order` as the payload value. An `Order` is converted to a string
+consisting of the order id, order status, and item list, separacter by comma
+("`,`") characters. The item list is a sequence of 1 or more items, separated
+by semicolon (";") characters. Each item is encoded as a string consisting of
+order id, item id, item status, description string, and integer quantity,
+each separated by colon ("`:`") characters.
+
+Note that you may assume that the separator characters "`|`", "`,`", "`;`", and
+"`:`" will never occur in a string value within an encoded message.
