@@ -749,3 +749,6 @@ make solution.zip
 To submit, upload your `solution.zip` file to **Assignment 5 MS1**
 or **Assignment 5 MS2** on Gradescope, depending on which milestone
 you are submitting.
+
+Keep in mind that for Milestone 2, your `README.txt` should contain
+your synchronization report.
