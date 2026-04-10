@@ -174,8 +174,10 @@ in the restaurant order system.
 
 ### Object Model
 
-The *object model* is the collection of data types representing orders, items, and
-their statuses. All of these types are defined in the `include/model.h` header file.
+The *object model* is the collection of data types representing orders, items,
+their statuses, and other important information. All of these types are
+declared in the `include/model.h` header file and defined
+in `src/model.cpp`.
 
 `OrderStatus` is an enumeration type representing the status of an order. Its
 members are `OrderStatus::INVALID`, `OrderStatus::NEW`, `OrderStatus::IN_PROGRESS`,
@@ -198,6 +200,13 @@ an integer quantity (which must be positive).
 
 The `Order` and `Item` classes have a variety of accessor functions for inspecting
 and modifying their data.
+
+The `ClientMode` enumeration type has three members, `ClientMode::INVALID`,
+`ClientMode::UPDATER`, and `ClientMode::DISPLAY`. The last two are used to
+distinguish the two kinds of clients. When a client logs in, it includes the
+client mode it wants to use, depending on which kind of client it is.
+(The `ClientMode::INVALID` value doesn't represent a valid client type,
+but it can be useful to indicate that the client mode is unknown.)
 
 ### Messages
 
@@ -291,8 +300,8 @@ client.
 
 In order to be sent and received via a TCP connection, a message is represented
 as a string, i.e., a sequence of bytes. The `Wire::encode` and `Wire::decode`
-functions (in `src/wire.cpp`) implement conversion of a `Message` object to and
-from a string representation.
+functions (declared in `include/wire.h` and defined in in `src/wire.cpp`)
+implement conversion of a `Message` object to and from a string representation.
 
 In the table of message types in the [Protocol](#protocol) section, you
 will note that the last column is called "Contained data values". The
@@ -346,11 +355,12 @@ Contrast this approach with a "terminating sentinel" style of framing, where
 the end of a message is indicated by a special sentinel character or character
 sequence.
 
-The `IO::send` and `IO::receive` functions (in `src/io.cpp`) frame and
-unframe a string value (i.e., an encoded message). `IO::send` writes the
-framed string to a file descriptor (e.g., a TCP socket), and `IO::receive`
-reads a framed string from a file descriptor. Note that these functions
-should throw `IOException` if any I/O error or EOF occurs.
+The `IO::send` and `IO::receive` functions (declared in `include/wire.h`
+and defined in `src/io.cpp`) frame and unframe a string value (i.e., an
+encoded message). `IO::send` writes the framed string to a file descriptor
+(e.g., a TCP socket), and `IO::receive` reads a framed string from a
+file descriptor. Note that these functions should throw `IOException`
+if any I/O error or EOF occurs.
 
 The `io_tests` unit test program (`make io_tests`) tests the implementation
 of `IO::send` and `IO::receive`. Once these tests pass, you can be
