@@ -288,12 +288,12 @@ and new item status to the message queues of each active display client. Also,
 if as a result of applying the item update, the order status transitions from
 `OrderStatus::NEW` to `OrderStatus::IN_PROGRESS`, or if the order status
 transitions from `OrderStatus::IN_PROGRESS` to `OrderStatus::DONE`, the server
-should enqueue a `MessageType::ORDER_UPDATE` with the order id and new order status
-to the message queues of each active display client.
+should enqueue a `MessageType::DISP_ORDER_UPDATE` message with the order id and
+new order status to the message queue of each active display client.
 
 ‡ When a `MessageType::ORDER_UPDATE` message is successfully processed, the
 server should enqueue a `MessageType::DISP_ORDER_UPDATE` message with the
-order id and new order status to the message queues of each active display
+order id and new order status to the message queue of each active display
 client.
 
 ### Encoding
