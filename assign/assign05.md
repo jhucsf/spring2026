@@ -729,14 +729,14 @@ consistently to clean up resources.
 
 [`std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr.html)
 is useful for implementing RAII for a dynamically allocated object. For example,
-in the server, you should pass a pointer to a dynamically allocated object to the
-thread start function of a thread tasked with communicating with a client, in
-order to give the thread the access to the resources it needs. A `std::unique_ptr`
-is a useful way to ensure that this object gets cleaned up before the thread
-exist. A mutex guard object implements RAII for a critical section, ensuring
-that the mutex is released. For the client programs, you might find it useful
-to use RAII to ensure that the client file descriptor gets closed before
-the program terminates.
+in the server, you should pass a pointer to a dynamically allocated `Client`
+object to the thread start function of the thread tasked with communicating with
+a client, in order to give the thread the access to the resources it needs.
+A `std::unique_ptr` is a useful way to ensure that this object gets cleaned up
+before the thread exist. A mutex guard object implements RAII for a critical
+section, ensuring that the mutex is released. For the client programs, you
+might find it useful to use RAII to ensure that the client file descriptor
+gets closed before the program terminates.
 
 ## Submitting
 
