@@ -48,7 +48,11 @@ For Milestone 2:
    detached thread, call its `chat` member function to communicate
    with the remote client.
 2. Implement the `Client::chat` member function sufficiently that
-   the client can log in
+   the client can log in. Test that you can log in successfully
+   using the `nc` (netcat) program. You can also try using your
+   client implementation or the reference client implementations,
+   although they won't work fully until you implement the server
+   functionality.
 3. Add functionality to the `Client` and `Server` classes to implement
    the required server functionality. You'll need to add a central
    data structure to `Server` to keep track of orders, and use
@@ -723,3 +727,15 @@ exist. A mutex guard object implements RAII for a critical section, ensuring
 that the mutex is released. For the client programs, you might find it useful
 to use RAII to ensure that the client file descriptor gets closed before
 the program terminates.
+
+## Submitting
+
+You can create a zipfile of your work by running the command
+
+```
+make solution.zip
+```
+
+To submit, upload your `solution.zip` file to **Assignment 5 MS1**
+or **Assignment 5 MS2** on Gradescope, depending on which milestone
+you are submitting.
