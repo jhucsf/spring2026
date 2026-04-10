@@ -515,6 +515,45 @@ to `std::cerr`, where *explanation* is any arbitrary text. In addition, if
 an error message is printed, the program should exit with a non-zero
 exit code to indicate failure.
 
+Here is a transcript showing a run of the updater client, with
+user input in **bold**:
+
+<div class='highlighter-rouge'><pre>
+username: <b>alice</b>
+password: <b>foobar</b>
+&gt; <b>order_new</b>
+<b>2</b>
+<b>42</b>
+<b>Veggie burger</b>
+<b>1</b>
+<b>101</b>
+<b>Curly fries</b>
+<b>2</b>
+Success: Created order id 1000
+&gt; <b>item_update</b>
+<b>1000</b>
+<b>42</b>
+<b>IN_PROGRESS</b>
+Success: successful item update
+&gt; <b>item_update</b>
+<b>1000</b>
+<b>101</b>
+<b>IN_PROGRESS</b>
+Success: successful item update
+&gt; <b>item_update</b>
+<b>1000</b>
+<b>42</b>
+<b>DONE</b>
+Success: successful item update
+&lt; <b>order_new</b>
+<b>1</b>
+<b>67</b>
+<b>Chocolate shake</b>
+<b>1</b>
+Success: Created order id 1001
+&gt; <b>quit</b>
+</pre></div>
+
 ### The Display Client
 
 The display client implements a basic information display showing the status
@@ -602,6 +641,21 @@ and the second line of an item is preceded by four spaces.
 Note that once the username and password have been entered, the display
 client does not read any further user input. You can terminate a display
 client by typing Control-C in the terminal it's running in.
+
+Here is what the display client would show in the terminal after
+the updates sent in the example session in the
+[Updater Client](#the-updater-client) section:
+
+<div class='highlighter-rouge'><pre>
+Order 1000: IN_PROGRESS
+  Item 42: DONE
+    Veggie burger, Quantity 1
+  Item 101: IN_PROGRESS
+    Curly fries, Quantity 2
+Order 1001: NEW
+  Item 67: NEW
+    Chocolate shake, Quantity 1
+</pre></div>
 
 ### The Server
 
