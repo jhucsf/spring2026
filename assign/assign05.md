@@ -94,7 +94,19 @@ is relatively easy, and fun!
 
 ## Grading Criteria
 
-TODO
+Milestone 1:
+
+* message encoding/decoding: 10%
+* framing functions: 10%
+* updater client implementation: 12.5%
+* display client implementation: 12.5%
+* design and coding style: 5%
+
+Milestone 2:
+
+* server implementation: 37.5%
+* concurrency report: 7.5%
+* design and coding style (server): 5%
 
 ## Getting Started
 
