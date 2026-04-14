@@ -31,6 +31,8 @@ Please email <daveho@cs.jhu.edu> if you need to get access to Courselore.
 
 ## News
 
+* **Apr 14** — [Assignment 5](assign/assign05.html) has been updated
+  to clarify two important client behaviors.
 * **Apr 10** — [Assignment 5](assign/assign05.html) has two milestones, due
   (respectively) Monday, April 20th and Monday, April 27th.
 * **Apr 1** — [Assignment 4](assign/assign04.html) is due Friday, April 10th.

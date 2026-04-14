@@ -25,6 +25,18 @@ more information about how you can test your code.
   </div>
 </div>
 
+Updates:
+
+*4/14*: updated the [Updater Client](#the-updater-client) and
+[Display Client](#the-display-client) sections to clarify that
+
+  1. A `MessageType::ERROR` response to a login request should
+     result in the client printing an error message to `std::cerr`
+     and immediately exiting with a non-zero exit code
+  2. When the status of an order changes to `OrderStatus::DELIVERED`,
+     it should be immediately removed from the display client's
+     collection of orders, before the display is refreshed
+
 ## Quick Guide
 
 Here are the high-level steps we recommend for completing the assignment.
@@ -465,7 +477,7 @@ Error: <i>error text</i>
 </pre></div>
 
 to `std::cerr` where *error text* is the string payload of the `MessageType::ERROR`
-message received from the server.
+message received from the server, and immediately exit with a non-zero exit code.
 
 The command loop works as follows. The client prints the prompt "`> `" and
 reads a line of text, which is the command name. Commands are handled as follows:
@@ -630,6 +642,13 @@ after processing the received message, the client should clear the screen,
 and then refresh the display by printing the information in all orders.
 The orders should be printed in increasing order by order id. (Hint: using a
 `std::map` to manage the collection of current orders will make this easy.)
+
+As a special case, if the display client receives a
+`MessageType::DISP_ORDER_UPDATE` message changing the status of an
+order to `OrderStatus::DELIVERED`, the order should be removed from
+the collection of orders before the display is refreshed.
+In other words, when the status of an order changes to delivered,
+it immediately disappears from the display.
 
 The format for printing each order is as follows.
 
