@@ -31,6 +31,10 @@ Please email <daveho@cs.jhu.edu> if you need to get access to Courselore.
 
 ## News
 
+* **Apr 15** — [Assignment 5](assign/assign05.html) has been updated to
+  add a link to a [Screencast video](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=42dc6767-076e-47a4-8bf0-b42d01350c73)
+  demonstrating how to run and test the client and server programs,
+  including using netcat to emulate a client or server.
 * **Apr 14** — [Assignment 5](assign/assign05.html) has been updated
   to clarify two important client behaviors.
 * **Apr 10** — [Assignment 5](assign/assign05.html) has two milestones, due

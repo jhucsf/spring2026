@@ -37,6 +37,9 @@ Updates:
      it should be immediately removed from the display client's
      collection of orders, before the display is refreshed
 
+*4/15*: linked to a [screencast video](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=42dc6767-076e-47a4-8bf0-b42d01350c73) with some suggestions for running
+and testing the client and server programs.
+
 ## Quick Guide
 
 Here are the high-level steps we recommend for completing the assignment.
@@ -155,6 +158,12 @@ executables compiled from the reference solution. They demonstrate the
 expected functionality, and you can use them to test your clients and
 server. (I.e., you can use the reference server to test your clients,
 and the reference clients to test your server.)
+
+The following screencast video demonstrates running the programs,
+and how you can use the netcat program to emulate a client or server
+for testing purposes:
+
+> <https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=42dc6767-076e-47a4-8bf0-b42d01350c73>
 
 ## Overview
 
