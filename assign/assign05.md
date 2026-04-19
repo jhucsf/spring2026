@@ -42,6 +42,13 @@ Updates:
 *4/15*: linked to a [screencast video](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=42dc6767-076e-47a4-8bf0-b42d01350c73) with some suggestions for running
 and testing the client and server programs.
 
+*4/19*: added content to the [Server](#the-server) section, and added
+[Synchronization of Shared Data](#synchronization-of-shared-data),
+[`MessageQueue`, Broadcasting to Display Clients](#messagequeue-broadcasting-to-display-clients),
+and [Synchronization Report](#synchronization-report) sections.
+These changes include all of the information you should need to
+complete Milestone 2 of the assignment.
+
 ## Quick Guide
 
 Here are the high-level steps we recommend for completing the assignment.
@@ -794,6 +801,10 @@ over the TCP connection. See the [`MessageQueue`, Broadcasting to Display
 Clients](#messagequeue-broadcasting-to-display-clients) for further
 details.
 
+Another case to be aware of for display clients is that when a display
+client connects to the server, it should be sent `MessageType::DISP_ORDER`
+messages for all current orders.
+
 For both updater and display clients, if there an `IOException` occurs
 when receiving or sending a message, the client thread should immediately
 cease communicating with the client, clean up resources, and terminate the
@@ -805,14 +816,65 @@ The single `Server` object should maintain all of the data about `Orders`,
 `Items`, and their statuses. Each `Client` object as a pointer to the
 `Server` object. You should add fields and member functions to the `Server`
 class that the `Client` object can use to have the `Server` do operations on
-the order and item data.
+the order and item data. Also, the `Server` will need to be able to
+broadcast messages to active display clients, so you will need to implement
+a way for the `Server` instance to keep track of active display clients.
 
 You will need to synchonize access to any data visible to multiple threads.
-
+In general, a `pthread_mutex_t` is sufficient to control access to shared
+data in situations where the only concern is preventing race conditions,
+and none of the operations any thread will be performing will involve
+waiting for a condition to be true.
 
 ### `MessageQueue`, Broadcasting to Display Clients
 
-TODO
+As we've discussed in class, queues are a great way to implement a communication
+channel from one thread to another. The `MessageQueue` class is intended to allow
+the server to send (shared) pointers to `Message` objects to active display
+clients. `MessageQueue` is not intended to be a bounded queue, so there is
+no enforced limit on how many messages the server can add to a display client's
+`MessageQueue`.
+
+You will need to implement a mechanism that allows the client thread invoking
+the `dequeue()` operation to remove message from the queue to wait until either
+
+1. The queue contains at least one `Message`, or
+2. The queue remains empty for one second
+
+We suggest using a `sem_t` (semaphore) object to keep track of how many messages
+have been added to the queue. Initially, the semaphmore count should be 0.
+The `enqueue()` operation should use `sem_post` to increment the semaphore,
+indicating that there is now one more message in the queue. The `dequeue()`
+member function can use `sem_timedwait` to wait for the queue to be nonempty.
+If you pass a `timespec_t` value to `sem_timedwait` set for one second in the
+future, `sem_timedwait` will return with an error if the semaphore count remains
+0 for one second. You can use the following code to initialize a `timespec_t`
+value for a time one second in the future:
+
+```c++
+std::timespec ts;
+std::timespec_get(&ts, TIME_UTC);
+ts.tv_sec += 1; // wait for one second
+```
+
+You can read more about `sem_timedwait` using the command `man sem_timedwait`.
+
+When the server needs to broadcast a message to all active display clients,
+it should iterate over the collection of active display clients, and use
+`MessageQueue::enqueue` to add a copy of the message to each display client's
+message queue. Note that you can use `Message::duplicate` to return a shared
+pointer to an exact copy of a specified `Message`. Giving each display client
+thread a shared pointer to a distinct dynamically allocated `Message` object
+is a good idea; allowing threads to access the same object instance can lead
+to conflicts, so avoiding unnecessary sharing of objects is a good practice
+for multithreaded programming.
+
+### Synchronization Report
+
+In your `README.txt` for Milestone 2, you should write a brief report
+explaining how you used synchronization to ensure that your server has
+no race conditions or deadlocks. Your report should explicitly indicate
+what data is shared between threads, and how that data is synchronized.
 
 ### Exceptions, RAII
 
