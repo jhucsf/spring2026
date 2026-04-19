@@ -15,6 +15,7 @@ is worth 1/6 of the assignments grade for the course, the same as
 Note that you may **not** use late hours on Milestone 2.
 Please plan accordingly.
 
+<!--
 <div class='admonition info'>
   <div class='title'>Note</div>
   <div class='content' markdown='1'>
@@ -24,6 +25,7 @@ description with information you will need for Milestone 2, as well as
 more information about how you can test your code.
   </div>
 </div>
+-->
 
 Updates:
 
@@ -713,7 +715,104 @@ Order 1001: NEW
 
 ### The Server
 
-*More details coming soon!*
+For each client that connects to the server, the server should follow
+the server protocol according to the state diagram shown in the
+[Protocol](#protocol) section.
+
+You will need to implement the `Server::server_loop` member function
+so that it accepts TCP connections from clients, and for each one,
+starts a new thread to communicate with the client.  Note that this
+member function does not return. The only way to terminate the server
+process is to send it a signal such as `SIGTERM`.
+
+You should create a new instance of the `Client` class to manage
+the resources needed by a client thread. A pointer to the `Client` object
+should be passed to the new thread's start function as its argument.
+
+The thread start function used to start new client threads should
+use `pthread_detach()` and `pthread_self()` to make the thread a detached
+thread, and then call the `Client::chat` member function of the thread's
+`Client` object. The `chat` member function should read requests from
+the client and send responses. Note that if the `chat` member function
+throws an exception, you should ensure that the thread is terminated
+gracefully, and that all resources (such as the TCP connection) are
+cleaned up. Assuming that the `Client` class's destructor does this cleanup,
+it should be sufficient to ensure that the `Client` object is deleted
+in order to ensure that resources are cleaned up.
+
+When communicating with an updater client, the basic idea is to handle
+`MessageType::ORDER_NEW`, `MessageType::ITEM_UPDATE`, and `MessageType::ORDER_UPDATE`
+messages by updating the `Server` object's collection of `Order`s.
+Each time a new `Order` is created, a `MessageType::DISP_ORDER` message
+should be broadcast to all connected display clients. `MessageType::ITEM_UPDATE`
+and `MessageType::ORDER_UPDATE` messages should be handled by updating the
+appropriate `Item` or `Order`, and broadcasting a `MessageType::DISP_ITEM_UPDATE`
+or `MessageType::DISP_ORDER_UPDATE` message to active display clients.
+
+Note the following special cases:
+
+1. When the client sends a `MessageType::ORDER_NEW` message, the order
+   id should be set to 1. The server should assign a new, valid order id.
+   The valid order ids start at 1000, and increase by 1 with each new
+   order.
+2. When the first `Item` in an `Order` changes status from
+   `ItemStatus::NEW` to `ItemStatus::IN_PROGRESS`, its `Order` changes
+   status from `OrderStatus::NEW` to `OrderStatus::IN_PROGRESS`.
+3. When all of the `Item`s in an `Order` have the status `ItemStatus::DONE`,
+   their `Order` should change status to `OrderStatus::DONE`.
+4. When a `MessageType::ORDER_UPDATE` message changes the status of an
+   `Order` to `OrderStatus::DELIVERED`, the `Order` should be removed
+   from the server's collection of orders.
+
+Note that cases 2 and 3 mean that the server should broadcast both a
+`MessageType::DISP_ITEM_UPDATE` message and a `MessageType::DISP_ORDER_UPDATE`
+message. They should be broadcast in that order (`MessageType::DISP_ITEM_UPDATE`
+first, `MessageType::DISP_ORDER_UPDATE` second.)
+
+Also note that for both items and orders, status updates must be applied
+in the correct sequence. Those sequences are as follows:
+
+* For `ItemStatus`, the sequence is `NEW`, `IN_PROGRESS`, `DONE`
+* For `OrderStatus`, the sequence is `NEW`, `IN_PROGRESS`, `DONE`, `DELIVERED`
+
+When an updater client request can't be handled because the order or item
+it refers to doesn't exist, or when an order or item status change isn't
+valid, the server should send back a `MessageType::ERROR` response.
+We recommend using the `SemanticError` exception type to represent this
+situation.
+
+When communicating with a display client, the `Client` object should
+wait for a shared pointer to a `Message` object to be enqueued on the
+`Client` object's `MessageQueue`. The idea is that when the server needs to
+broadcast display updates to all active display clients, it does so by
+enqueuing a `std::shared_ptr` to a `Message` to each display client's
+`MessageQueue`. If a shared pointer to a valid `Message` object can be
+dequeued within 1 second, that `Message` should be sent to the remote
+display client over the TCP connection. If no valid `Message` is available
+within one second, a `MessageType::DISP_HEARTBEAT` message should be send
+over the TCP connection. See the [`MessageQueue`, Broadcasting to Display
+Clients](#messagequeue-broadcasting-to-display-clients) for further
+details.
+
+For both updater and display clients, if there an `IOException` occurs
+when receiving or sending a message, the client thread should immediately
+cease communicating with the client, clean up resources, and terminate the
+thread.
+
+### Synchronization of Shared Data
+
+The single `Server` object should maintain all of the data about `Orders`,
+`Items`, and their statuses. Each `Client` object as a pointer to the
+`Server` object. You should add fields and member functions to the `Server`
+class that the `Client` object can use to have the `Server` do operations on
+the order and item data.
+
+You will need to synchonize access to any data visible to multiple threads.
+
+
+### `MessageQueue`, Broadcasting to Display Clients
+
+TODO
 
 ### Exceptions, RAII
 
