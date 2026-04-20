@@ -49,6 +49,9 @@ and [Synchronization Report](#synchronization-report) sections.
 These changes include all of the information you should need to
 complete Milestone 2 of the assignment.
 
+*4/20*: fixed to clarify that the `IO::send` and `IO::receive` functions
+are declared in `include/io.h`.
+
 ## Quick Guide
 
 Here are the high-level steps we recommend for completing the assignment.
@@ -385,7 +388,7 @@ Contrast this approach with a "terminating sentinel" style of framing, where
 the end of a message is indicated by a special sentinel character or character
 sequence.
 
-The `IO::send` and `IO::receive` functions (declared in `include/wire.h`
+The `IO::send` and `IO::receive` functions (declared in `include/io.h`
 and defined in `src/io.cpp`) frame and unframe a string value (i.e., an
 encoded message). `IO::send` writes the framed string to a file descriptor
 (e.g., a TCP socket), and `IO::receive` reads a framed string from a
