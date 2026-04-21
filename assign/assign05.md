@@ -604,7 +604,7 @@ Success: successful item update
 <b>42</b>
 <b>DONE</b>
 Success: successful item update
-&lt; <b>order_new</b>
+&gt; <b>order_new</b>
 <b>1</b>
 <b>67</b>
 <b>Chocolate shake</b>
